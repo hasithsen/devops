@@ -5,7 +5,7 @@ Learning material and projects related to DevOps
 
 - Linux 
 - Networking
-- Database
+- Databases
 - Cloud
 
 ## Concepts
@@ -14,9 +14,6 @@ Learning material and projects related to DevOps
   - [An architect's guide to DevOps pipelines: Continuous integration & continuous delivery (CI/CD)
 ](https://www.redhat.com/architect/devops-cicd)
   - [What is a DevOps pipeline? A complete guide](https://resources.github.com/devops/pipeline/)
-
-- System design
-  - [ByteByteGo System Design 101](https://github.com/ByteByteGoHq/system-design-101)
 
 ## Culture
 
@@ -28,6 +25,11 @@ Learning material and projects related to DevOps
 - SRE
   - [Google Site Reliability Engineering](https://sre.google/books/)
 
+## Ops
+
+- System design
+  - [ByteByteGo System Design 101](https://github.com/ByteByteGoHq/system-design-101)
+  
 ## Dev
 
 - Data Structures and Algorithms
