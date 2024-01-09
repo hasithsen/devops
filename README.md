@@ -3,10 +3,10 @@ Learning material and projects related to DevOps
 
 ## Fundamentals
 
-- Linux 
-- Networking
-- Databases
-- Cloud
+- [Linux](docs/linux/README.md) 
+- [Networking](docs/networking/README.md) 
+- [Security](docs/security/README.md) 
+- [Databases](docs/databases/README.md) 
 
 ## Concepts
 
@@ -29,7 +29,13 @@ Learning material and projects related to DevOps
 
 - System design
   - [ByteByteGo System Design 101](https://github.com/ByteByteGoHq/system-design-101)
-  
+
+- Cloud
+  - [Google Cloud Certified Professional Cloud DevOps Engineer](https://cloud.google.com/learn/certification/cloud-devops-engineer)
+  - [Google Cloud Certified Professional Cloud Architect](https://cloud.google.com/learn/certification/cloud-architect)
+  - [AWS Certified Solutions Architect - Associate](https://aws.amazon.com/certification/certified-solutions-architect-associate/)
+
+
 ## Dev
 
 - Data Structures and Algorithms
