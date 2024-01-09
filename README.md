@@ -4,7 +4,6 @@ Learning material and projects related to DevOps
 ## Fundamentals
 
 - [The Elements of Computing Systems](https://www.nand2tetris.org/)
-
 - [Linux](docs/linux/README.md) 
 - [Networking](docs/networking/README.md) 
 - [Security](docs/security/README.md) 
