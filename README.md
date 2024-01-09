@@ -8,15 +8,32 @@ Learning material and projects related to DevOps
 - Database
 - Cloud
 
+## Concepts
+
+- DevOps pipelines
+  - [An architect's guide to DevOps pipelines: Continuous integration & continuous delivery (CI/CD)
+](https://www.redhat.com/architect/devops-cicd)
+  - [What is a DevOps pipeline? A complete guide](https://resources.github.com/devops/pipeline/)
+
+- System design
+  - [ByteByteGo System Design 101](https://github.com/ByteByteGoHq/system-design-101)
+
 ## Culture
 
 - DevOps 
   - [Google Cloud DevOps Research and Assessment](https://dora.dev/)
   - [AWS DevOps](https://aws.amazon.com/devops/)
+  - [Atlassian Incident Management](https://www.atlassian.com/incident-management/handbook/postmortems)
+
 - SRE
   - [Google Site Reliability Engineering](https://sre.google/books/)
 
-## Projects
+## Dev
 
-- DevOps pipelines
-- System design
+- Data Structures and Algorithms
+  - Introduction to Algorithms
+  - The Algorithm Design Manual
+  - Data Structures and Algorithms in Python
+  - HackerRank
+  - LeetCode
+  - Exercism
