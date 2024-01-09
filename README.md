@@ -3,11 +3,11 @@ Learning material and projects related to DevOps
 
 ## Fundamentals
 
-Linux 
-Networking
-Database
-Cloud
+- Linux 
+- Networking
+- Database
+- Cloud
 
 ## Projects
 
-DevOps pipelines
+- DevOps pipelines
