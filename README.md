@@ -3,6 +3,7 @@ Learning material and projects related to DevOps
 
 ## Fundamentals
 
+- [Mathematics For Computer Science](https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010)
 - [The Elements of Computing Systems](https://www.nand2tetris.org/)
 - [Linux](docs/linux/README.md) 
 - [Networking](docs/networking/README.md) 
