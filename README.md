@@ -19,13 +19,10 @@ Learning material and projects related to DevOps
 
 ## Culture
 
-- DevOps 
-  - [Google Cloud DevOps Research and Assessment](https://dora.dev/)
-  - [AWS DevOps](https://aws.amazon.com/devops/)
-  - [Atlassian Incident Management](https://www.atlassian.com/incident-management/handbook/postmortems)
-
-- SRE
-  - [Google Site Reliability Engineering](https://sre.google/books/)
+- [Google Site Reliability Engineering](https://sre.google/books/)
+- [Google Cloud DevOps Research and Assessment](https://dora.dev/)
+- [AWS DevOps](https://aws.amazon.com/devops/)
+- [Atlassian Incident Management](https://www.atlassian.com/incident-management/handbook/postmortems)
 
 ## Ops
 
