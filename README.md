@@ -1,6 +1,10 @@
 # DevOps
 Learning material and projects related to DevOps
 
+## Plans
+
+- [30-Day Elite DevOps Plan](plans/elite-devops-30-day/index.html) — a checkbox-tracked, four-release training pipeline (Linux/networking/Git → Docker/CI-CD → Cloud/Terraform/Kubernetes → Observability/SRE) capped by a capstone project. Open the file in a browser.
+
 ## Fundamentals
 
 - [Mathematics For Computer Science](https://openlearninglibrary.mit.edu/courses/course-v1:OCW+6.042J+2T2019/course)

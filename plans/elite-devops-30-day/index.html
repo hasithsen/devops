@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elite Ops Pipeline — 30-Day DevOps Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #0d1420;
+    --panel: #16202c;
+    --panel-alt: #1d2b3a;
+    --border: #2a3a4c;
+    --text: #e8eef4;
+    --muted: #93a3b3;
+    --accent: #f2a53c;
+    --accent-ink: #241705;
+    --accent-2: #4fd1c5;
+    --success: #6fcf7a;
+    --danger: #e2665f;
+    color-scheme: dark;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --ink: #f6f3ec;
+      --panel: #fffdf9;
+      --panel-alt: #eee7d8;
+      --border: #ddd3bd;
+      --text: #1c2430;
+      --muted: #5c6774;
+      --accent: #b8720f;
+      --accent-ink: #fff8ec;
+      --accent-2: #16847a;
+      --success: #2f8f45;
+      --danger: #b83f38;
+      color-scheme: light;
+    }
+  }
+
+  :root[data-theme="light"] {
+    --ink: #f6f3ec;
+    --panel: #fffdf9;
+    --panel-alt: #eee7d8;
+    --border: #ddd3bd;
+    --text: #1c2430;
+    --muted: #5c6774;
+    --accent: #b8720f;
+    --accent-ink: #fff8ec;
+    --accent-2: #16847a;
+    --success: #2f8f45;
+    --danger: #b83f38;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  ul { margin: 0; padding: 0; }
+
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.55;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 6rem;
+  }
+
+  code, .mono, .tag, .badge, .kbd, .time, .version {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  h1, h2, h3 { text-wrap: balance; font-weight: 600; margin: 0; }
+
+  a { color: var(--accent-2); }
+  a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 2px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    margin-bottom: 1.75rem;
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .72rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+  }
+  .masthead h1 {
+    font-size: clamp(1.7rem, 4vw, 2.35rem);
+    letter-spacing: -0.01em;
+  }
+  .masthead p {
+    color: var(--muted);
+    margin: .35rem 0 0;
+    max-width: 62ch;
+    font-size: .97rem;
+  }
+
+  /* ---------- pipeline status header ---------- */
+  .pipeline {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.25rem 1.4rem;
+    margin-bottom: 2.25rem;
+  }
+  .pipeline-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: .9rem;
+    flex-wrap: wrap;
+  }
+  .pipeline-top .run-name { font-size: .85rem; color: var(--muted); }
+  .pipeline-top .run-name b { color: var(--text); font-weight: 600; }
+  .overall-pct { font-size: 1.05rem; font-weight: 600; color: var(--accent); }
+
+  .progress-track {
+    height: 8px;
+    border-radius: 5px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1.1rem;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    width: 0%;
+    transition: width .35s ease;
+  }
+  @media (prefers-reduced-motion: reduce) { .progress-fill { transition: none; } }
+
+  .stages {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: .5rem;
+  }
+  .stage {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .55rem .4rem;
+    text-align: center;
+    background: var(--panel-alt);
+  }
+  .stage .stage-name {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .68rem;
+    letter-spacing: .04em;
+    color: var(--muted);
+    display: block;
+    margin-bottom: .3rem;
+  }
+  .stage .stage-pct {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: .95rem;
+  }
+  .stage[data-status="done"] { border-color: var(--success); }
+  .stage[data-status="done"] .stage-pct { color: var(--success); }
+  .stage[data-status="active"] { border-color: var(--accent); }
+  .stage[data-status="active"] .stage-pct { color: var(--accent); }
+  .stage[data-status="pending"] .stage-pct { color: var(--muted); }
+
+  .reset-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: .9rem;
+  }
+  .reset-btn {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .72rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: .3rem .6rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .reset-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ---------- benchmark strip ---------- */
+  .benchmark {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .75rem;
+    margin-bottom: 2.5rem;
+  }
+  .benchmark div {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .7rem .8rem;
+    background: var(--panel);
+  }
+  .benchmark .k { font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-family: "IBM Plex Mono", monospace; }
+  .benchmark .v { font-family: "IBM Plex Mono", monospace; font-weight: 600; color: var(--accent-2); font-size: 1rem; margin-top: .2rem; }
+  .benchmark-caption { color: var(--muted); font-size: .82rem; margin: .6rem 0 0; }
+
+  /* ---------- release (week) sections ---------- */
+  .release {
+    margin-bottom: 2.75rem;
+  }
+  .release-head {
+    display: flex;
+    align-items: baseline;
+    gap: .75rem;
+    flex-wrap: wrap;
+    margin-bottom: .3rem;
+  }
+  .version {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    padding: .1rem .5rem;
+    border-radius: 5px;
+  }
+  .release-head h2 { font-size: 1.25rem; }
+  .release-goal { color: var(--muted); font-size: .92rem; margin: .3rem 0 1.1rem; max-width: 65ch; }
+
+  .day {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel);
+    margin-bottom: .55rem;
+    overflow: hidden;
+  }
+  .day[data-done="true"] { border-color: var(--success); }
+  .day.rest { background: transparent; border-style: dashed; }
+
+  .day summary {
+    list-style: none;
+    cursor: pointer;
+    padding: .7rem .9rem;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+  .day summary::-webkit-details-marker { display: none; }
+  .day summary .chevron {
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--muted);
+    font-size: .75rem;
+    transition: transform .15s ease;
+    flex: none;
+  }
+  .day[open] summary .chevron { transform: rotate(90deg); }
+
+  .day input[type="checkbox"] {
+    width: 1.05rem;
+    height: 1.05rem;
+    accent-color: var(--success);
+    flex: none;
+    cursor: pointer;
+  }
+
+  .day-id {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .78rem;
+    color: var(--muted);
+    flex: none;
+    min-width: 3.2rem;
+  }
+  .day-title { font-weight: 500; flex: 1; min-width: 0; }
+  .day-title span.done-strike { text-decoration: line-through; color: var(--muted); }
+  .time-badge {
+    font-size: .72rem;
+    color: var(--muted);
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    padding: .1rem .45rem;
+    border-radius: 999px;
+    flex: none;
+    white-space: nowrap;
+  }
+
+  .day-body {
+    padding: 0 .9rem 1rem 2.6rem;
+  }
+  .day-body ul { margin: 0 0 .6rem; padding-left: 1.1rem; }
+  .day-body li { margin-bottom: .3rem; font-size: .93rem; }
+  .tags { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: .6rem; }
+  .tag {
+    font-size: .68rem;
+    letter-spacing: .03em;
+    color: var(--muted);
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    padding: .1rem .4rem;
+    border-radius: 4px;
+  }
+  .links { font-size: .85rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+  .links a { text-decoration: none; }
+  .links a:hover { text-decoration: underline; }
+
+  /* ---------- capstone ---------- */
+  .capstone {
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 1.5rem 1.5rem 1.3rem;
+    background: linear-gradient(180deg, var(--panel), var(--panel-alt));
+  }
+  .capstone .version { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .capstone h2 { font-size: 1.4rem; margin-top: .5rem; }
+  .capstone p.lead { color: var(--muted); max-width: 65ch; margin: .5rem 0 1.2rem; }
+  .capstone .day { background: var(--ink); }
+
+  /* ---------- resource index ---------- */
+  .resource-index {
+    margin-top: 3rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+  }
+  .resource-index h3 {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .8rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .9rem;
+  }
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: .3rem 1.5rem;
+    font-size: .88rem;
+  }
+  .resource-grid a { display: block; padding: .15rem 0; }
+
+  footer {
+    margin-top: 3rem;
+    color: var(--muted);
+    font-size: .82rem;
+    text-align: center;
+  }
+
+  @media (max-width: 560px) {
+    .stages { grid-template-columns: repeat(5, 1fr); }
+    .stage-name { display: none !important; }
+    .benchmark { grid-template-columns: repeat(2, 1fr); }
+    .day-body { padding-left: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <span class="eyebrow">30-day training pipeline</span>
+    <h1>From CLI to CI/CD to on-call: a 30-day build toward elite DevOps</h1>
+    <p>Four weekly releases plus a capstone tag, run like a sprint: foundations first, then delivery, platform, and operations — closing with one project that proves all of it works together.</p>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipeline-top">
+      <div class="run-name">run: <b>elite-ops-plan</b> · branch: <b>main</b></div>
+      <div class="overall-pct" id="overallPct">0% complete</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="overallFill"></div></div>
+    <div class="stages" id="stages"></div>
+    <div class="reset-row"><button class="reset-btn" id="resetBtn">reset progress</button></div>
+  </div>
+
+  <div class="benchmark">
+    <div><div class="k">Deploy frequency</div><div class="v">on demand</div></div>
+    <div><div class="k">Lead time for changes</div><div class="v">&lt; 1 hour</div></div>
+    <div><div class="k">Time to restore</div><div class="v">&lt; 1 hour</div></div>
+    <div><div class="k">Change failure rate</div><div class="v">0–15%</div></div>
+  </div>
+  <p class="benchmark-caption" style="margin-top:-1.5rem; margin-bottom: 2.5rem;">↑ Google/DORA's published benchmarks for "elite" performers. This plan exists to make those four numbers something you can defend in an interview, not just recite.</p>
+
+  <div id="releases"></div>
+
+  <div class="resource-index">
+    <h3>Resource index</h3>
+    <div class="resource-grid" id="resourceGrid"></div>
+  </div>
+
+  <footer>Built for one operator, one month, one deliberate rep at a time.</footer>
+</div>
+
+<script>
+(function () {
+  const WEEKS = [
+    {
+      version: "v0.1.0",
+      name: "Core Systems",
+      goal: "The machine underneath everything else: shell, filesystem, network, version control, and enough scripting to stop doing things by hand.",
+      days: [
+        { id: 1, title: "Linux CLI I — filesystem, permissions, processes", time: "90 min", tags: ["LINUX"],
+          tasks: ["Walk the filesystem hierarchy (/etc, /var, /proc) and read man pages instead of googling them", "Master chmod/chown/umask and the permission bits, symbolic and octal", "Learn job control: &, jobs, fg/bg, nohup, kill -9 vs -15", "Lab: clear OverTheWire Bandit levels 0–5"],
+          links: [["OverTheWire Bandit", "https://overthewire.org/wargames/bandit/"], ["Linux Journey", "https://linuxjourney.com/"]] },
+        { id: 2, title: "Linux CLI II — pipes, text tools, systemd", time: "90 min", tags: ["LINUX"],
+          tasks: ["Chain pipes and redirects; build one-liners with grep, sed, awk, sort, uniq", "Read and follow logs with journalctl and systemctl status/enable", "Write a script that parses a log file and summarizes error counts", "Lab: clear Bandit levels 6–12"],
+          links: [["explainshell", "https://explainshell.com/"], ["OverTheWire Bandit", "https://overthewire.org/wargames/bandit/"]] },
+        { id: 3, title: "Networking fundamentals", time: "100 min", tags: ["NET"],
+          tasks: ["Trace a request through OSI/TCP-IP layers, from ARP to TLS handshake", "Practice dig, curl -v, traceroute, and netstat/ss on your own machine", "Explain the difference between TCP and UDP with a real example each", "Read up on how DNS resolution actually works end to end"],
+          links: [["MDN: HTTP overview", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview"], ["Cloudflare: what is DNS", "https://www.cloudflare.com/learning/dns/what-is-dns/"]] },
+        { id: 4, title: "Git mastery", time: "80 min", tags: ["GIT"],
+          tasks: ["Compare trunk-based development with GitFlow and know when each fits", "Practice interactive rebase, cherry-pick, and git bisect on a scratch repo", "Write a pre-commit hook that lints or blocks a bad commit", "Rewrite a messy commit history into a clean, reviewable one"],
+          links: [["Git Book", "https://git-scm.com/book"], ["Atlassian Git tutorials", "https://www.atlassian.com/git/tutorials"]] },
+        { id: 5, title: "Scripting for automation", time: "100 min", tags: ["SCRIPT"],
+          tasks: ["Write a Bash health-check script with proper exit codes and set -euo pipefail", "Write the same logic in Python and compare readability and error handling", "Add argument parsing and a --help flag to both", "Skim a real style guide and fix your scripts against it"],
+          links: [["Google Shell Style Guide", "https://google.github.io/styleguide/shellguide.html"], ["The Hitchhiker's Guide to Python", "https://docs.python-guide.org/"]] },
+        { id: 6, title: "Lab day — idempotent bootstrap script", time: "2 hr", tags: ["LINUX", "SCRIPT"],
+          tasks: ["Write a script that provisions a fresh box from zero: packages, users, dotfiles, firewall rules", "Make it safe to re-run (idempotent) — running it twice changes nothing the second time", "Document it in a README as if a teammate has to run it cold"],
+          links: [["roadmap.sh: DevOps", "https://roadmap.sh/devops"]] },
+        { id: 7, title: "Rest & reflect", time: "30 min", tags: ["REFLECT"], rest: true,
+          tasks: ["Read the first chapter of the Google SRE book", "Journal: what was the most surprising thing you learned this week?", "No lab today — let it sink in"],
+          links: [["Google SRE Book", "https://sre.google/sre-book/table-of-contents/"]] }
+      ]
+    },
+    {
+      version: "v0.2.0",
+      name: "Ship It",
+      goal: "Package software reliably and move it through a pipeline instead of a terminal — containers, CI, CD, and the quality gates that keep both honest.",
+      days: [
+        { id: 8, title: "Docker fundamentals", time: "90 min", tags: ["DOCKER"],
+          tasks: ["Understand images, layers, and the build cache — why layer order matters", "Write a multi-stage Dockerfile that keeps the final image small", "Learn the difference between CMD, ENTRYPOINT, and ARG vs ENV", "Audit an image with a linter (hadolint) and fix its warnings"],
+          links: [["Docker: Get started", "https://docs.docker.com/get-started/"]] },
+        { id: 9, title: "Docker Compose", time: "80 min", tags: ["DOCKER"],
+          tasks: ["Bring up a multi-container stack (app + database + cache) with one command", "Add named volumes for persistence and a custom network for isolation", "Add healthchecks and depends_on: condition so services start in the right order"],
+          links: [["Docker Compose docs", "https://docs.docker.com/compose/"]] },
+        { id: 10, title: "CI fundamentals", time: "100 min", tags: ["CI/CD"],
+          tasks: ["Write a GitHub Actions workflow that builds and tests on every push", "Add a matrix build across two runtime versions", "Cache dependencies so the pipeline doesn't reinstall the world every run", "Store a secret and use it safely inside a step"],
+          links: [["GitHub Actions docs", "https://docs.github.com/en/actions"]] },
+        { id: 11, title: "CD fundamentals", time: "90 min", tags: ["CI/CD"],
+          tasks: ["Push a built image to a container registry from the pipeline", "Tag releases with semantic versioning and understand what each digit promises", "Wire up an automated deploy step to a VM or staging target"],
+          links: [["Semantic Versioning", "https://semver.org/"]] },
+        { id: 12, title: "Quality gates", time: "90 min", tags: ["CI/CD"],
+          tasks: ["Run unit and integration tests as a required pipeline stage", "Add a linter and a dependency/image vulnerability scan (e.g. Trivy)", "Make the pipeline fail loudly and specifically — no silent green builds"],
+          links: [["Trivy scanner", "https://trivy.dev/"]] },
+        { id: 13, title: "Lab day — full pipeline, one app", time: "2 hr", tags: ["DOCKER", "CI/CD"],
+          tasks: ["Take any small app and containerize it end to end", "Build one pipeline: lint → test → scan → build → push to a registry", "This app becomes the base for your capstone — keep the repo tidy"] },
+        { id: 14, title: "Rest & reflect", time: "30 min", tags: ["REFLECT"], rest: true,
+          tasks: ["Read about release engineering practices at scale", "Compare your pipeline's shape against DORA's elite-tier benchmarks above", "No lab today"],
+          links: [["DORA", "https://dora.dev/"]] }
+      ]
+    },
+    {
+      version: "v0.3.0",
+      name: "Scale It",
+      goal: "Move off your laptop: cloud accounts, infrastructure as code, and a real orchestrator instead of docker run by hand.",
+      days: [
+        { id: 15, title: "Cloud fundamentals", time: "100 min", tags: ["CLOUD"],
+          tasks: ["Set up an AWS Free Tier account and enable billing alerts before anything else", "Create an IAM user with least-privilege permissions — never use the root account day to day", "Stand up a VPC with public/private subnets and launch one EC2 instance into it", "Put a file in S3 and lock its bucket policy down properly"],
+          links: [["AWS Free Tier", "https://aws.amazon.com/free/"], ["IAM introduction", "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html"]] },
+        { id: 16, title: "Infrastructure as Code", time: "100 min", tags: ["IAC"],
+          tasks: ["Write Terraform to reproduce yesterday's VPC + EC2 setup declaratively", "Understand state — what it is, why it's dangerous to edit by hand, and how locking works", "Split the config into reusable modules with variables and outputs", "Run plan before every apply and read the diff like a code review"],
+          links: [["Terraform tutorials", "https://developer.hashicorp.com/terraform/tutorials"]] },
+        { id: 17, title: "Kubernetes fundamentals", time: "100 min", tags: ["K8S"],
+          tasks: ["Spin up a local cluster with kind or minikube", "Deploy your capstone app as a Pod, then a Deployment, then expose it with a Service", "Practice kubectl describe / logs / exec until debugging a pod feels natural"],
+          links: [["Kubernetes basics tutorial", "https://kubernetes.io/docs/tutorials/kubernetes-basics/"], ["kind", "https://kind.sigs.k8s.io/"]] },
+        { id: 18, title: "Kubernetes intermediate", time: "90 min", tags: ["K8S"],
+          tasks: ["Externalize config with ConfigMaps and secrets with Secrets — never hardcode either", "Add an Ingress so the app is reachable by name, not a raw port", "Package the whole thing as a Helm chart with values you can override per environment"],
+          links: [["Helm docs", "https://helm.sh/docs/"]] },
+        { id: 19, title: "Serverless & managed services", time: "70 min", tags: ["CLOUD"],
+          tasks: ["Deploy one function to Lambda (or Cloud Functions) and trigger it over HTTP", "Write down, in your own words, when a managed service beats self-hosting it on k8s", "Compare the operational cost you just avoided against what you'd own on a cluster"],
+          links: [["AWS Lambda", "https://aws.amazon.com/lambda/"]] },
+        { id: 20, title: "Lab day — provision the platform", time: "2 hr", tags: ["IAC", "K8S"],
+          tasks: ["Use Terraform to provision the cluster (or the cloud resources around a local one)", "Deploy your Week 2 app onto it via the Helm chart you built", "Tear it down and bring it back up from code alone — that's the actual test"] },
+        { id: 21, title: "Rest & reflect", time: "30 min", tags: ["REFLECT"], rest: true,
+          tasks: ["Read the DORA four-keys guide closely", "Estimate your own deployment frequency and lead time for changes right now", "No lab today"],
+          links: [["DORA: Four Keys metrics", "https://dora.dev/guides/dora-metrics-four-keys/"]] }
+      ]
+    },
+    {
+      version: "v0.4.0",
+      name: "Operate It",
+      goal: "Software that ships is not the same as software that's operable. Learn to see it running, know when it's unhealthy, and explain a failure without blame.",
+      days: [
+        { id: 22, title: "Observability I — metrics, logs, traces", time: "90 min", tags: ["OBS"],
+          tasks: ["Learn the difference between the three pillars and when each one earns its cost", "Install Prometheus on your cluster and scrape a real metric from your app", "Write one PromQL query that would actually page someone if it crossed a threshold"],
+          links: [["Prometheus overview", "https://prometheus.io/docs/introduction/overview/"]] },
+        { id: 23, title: "Observability II — dashboards & alerting", time: "90 min", tags: ["OBS"],
+          tasks: ["Connect Grafana to Prometheus and build a dashboard for your app's golden signals", "Write an alerting rule with a threshold you can defend, not a guess", "Practice writing an alert message a half-asleep on-call engineer could act on"],
+          links: [["Grafana tutorials", "https://grafana.com/tutorials/"]] },
+        { id: 24, title: "SRE practice — SLIs, SLOs, error budgets", time: "80 min", tags: ["SRE"],
+          tasks: ["Define one SLI for your capstone app (e.g. request success rate)", "Set an SLO against it and calculate the resulting error budget", "Decide, in writing, what happens to shipping velocity once the budget is spent"],
+          links: [["SRE Book: Service Level Objectives", "https://sre.google/sre-book/service-level-objectives/"]] },
+        { id: 25, title: "Incident response", time: "90 min", tags: ["SRE"],
+          tasks: ["Run a small chaos experiment: kill a pod or block a dependency on purpose", "Watch your own dashboards catch it (or notice where they don't)", "Write a blameless postmortem: timeline, impact, root cause, and follow-ups"],
+          links: [["SRE Book: Postmortem culture", "https://sre.google/sre-book/postmortem-culture/"]] },
+        { id: 26, title: "System design for DevOps", time: "100 min", tags: ["SYS-DESIGN"],
+          tasks: ["Study two case studies for architectures you don't already know", "Sketch a highly-available deployment for your capstone app across two zones", "Identify its single points of failure out loud, then fix the sketch"],
+          links: [["ByteByteGo: System Design 101", "https://github.com/ByteByteGoHq/system-design-101"]] },
+        { id: 27, title: "DSA + behavioral prep", time: "90 min", tags: ["DSA", "PREP"],
+          tasks: ["Solve two array/string problems, easy or medium, and explain the complexity out loud", "Write three STAR-format stories drawn from this month (a bug you chased, a tradeoff you made, a thing that broke)", "Time yourself telling one story in under 90 seconds"],
+          links: [["LeetCode", "https://leetcode.com/"]] },
+        { id: 28, title: "Rest & reflect", time: "30 min", tags: ["REFLECT"], rest: true,
+          tasks: ["Re-read the DORA benchmarks from the top of this page", "Score your own pipeline honestly against all four metrics", "No lab today — tomorrow is the capstone"],
+          links: [["DORA", "https://dora.dev/"]] }
+      ]
+    }
+  ];
+
+  const CAPSTONE = {
+    version: "v1.0.0-elite",
+    name: "Capstone",
+    days: [
+      { id: 29, title: "Capstone build — wire it all together", time: "3 hr", tags: ["CAPSTONE"],
+        tasks: [
+          "Take the app from Week 2 and put every piece behind it: containerized, CI-tested and scanned, deployed by Terraform onto Kubernetes, fronted by Helm, observed by Prometheus and Grafana, governed by the SLO you defined on day 24",
+          "Write a runbook README: how to deploy it, how to roll it back, what the alerts mean, who'd get paged",
+          "Commit it as a real, presentable repository — this is the artifact you point to in an interview"
+        ] },
+      { id: 30, title: "Demo, mock interview, and the next 90 days", time: "2 hr", tags: ["CAPSTONE", "PREP"],
+        tasks: [
+          "Run yourself through one system-design question about your own capstone: 'how would this handle 100x traffic?'",
+          "Run yourself through two behavioral questions using the STAR stories from day 27",
+          "Pin the repo, write a short retro on what surprised you this month, and write down three concrete things to go deeper on next"
+        ] }
+    ]
+  };
+
+  const state = load();
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem("elite-ops-plan-progress")) || {}; }
+    catch (e) { return {}; }
+  }
+  function save() { localStorage.setItem("elite-ops-plan-progress", JSON.stringify(state)); }
+
+  function dayRow(day, isCapstone) {
+    const done = !!state[day.id];
+    const el = document.createElement("details");
+    el.className = "day" + (day.rest ? " rest" : "");
+    el.dataset.done = done;
+    el.dataset.dayId = day.id;
+
+    const tags = (day.tags || []).map(t => `<span class="tag">${t}</span>`).join("");
+    const links = (day.links || []).map(([label, href]) =>
+      `<a href="${href}" target="_blank" rel="noopener">${label} ↗</a>`).join("");
+    const tasks = day.tasks.map(t => `<li>${t}</li>`).join("");
+
+    el.innerHTML = `
+      <summary>
+        <input type="checkbox" ${done ? "checked" : ""} aria-label="Mark day ${day.id} complete">
+        <span class="chevron">▸</span>
+        <span class="day-id">day ${String(day.id).padStart(2, "0")}</span>
+        <span class="day-title"><span class="${done ? "done-strike" : ""}">${day.title}</span></span>
+        <span class="time-badge">${day.time}</span>
+      </summary>
+      <div class="day-body">
+        ${tags ? `<div class="tags">${tags}</div>` : ""}
+        <ul>${tasks}</ul>
+        ${links ? `<div class="links">${links}</div>` : ""}
+      </div>
+    `;
+
+    const checkbox = el.querySelector("input");
+    checkbox.addEventListener("click", (e) => e.stopPropagation());
+    checkbox.addEventListener("change", () => {
+      state[day.id] = checkbox.checked;
+      save();
+      el.dataset.done = checkbox.checked;
+      el.querySelector(".day-title span").className = checkbox.checked ? "done-strike" : "";
+      renderStages();
+    });
+
+    return el;
+  }
+
+  function renderReleases() {
+    const container = document.getElementById("releases");
+    WEEKS.forEach(week => {
+      const section = document.createElement("section");
+      section.className = "release";
+      section.innerHTML = `
+        <div class="release-head">
+          <span class="version">${week.version}</span>
+          <h2>${week.name}</h2>
+        </div>
+        <p class="release-goal">${week.goal}</p>
+      `;
+      const list = document.createElement("div");
+      week.days.forEach(d => list.appendChild(dayRow(d)));
+      section.appendChild(list);
+      container.appendChild(section);
+    });
+
+    const cap = document.createElement("section");
+    cap.className = "release capstone";
+    cap.innerHTML = `
+      <span class="version">${CAPSTONE.version}</span>
+      <h2>${CAPSTONE.name}</h2>
+      <p class="lead">Every prior release is a component. This one is the system — the two days where you prove the whole pipeline actually holds together, then rehearse saying so out loud.</p>
+    `;
+    const capList = document.createElement("div");
+    CAPSTONE.days.forEach(d => capList.appendChild(dayRow(d, true)));
+    cap.appendChild(capList);
+    container.appendChild(cap);
+  }
+
+  function groupStatus(days) {
+    const total = days.length;
+    const done = days.filter(d => state[d.id]).length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    const status = pct === 100 ? "done" : pct > 0 ? "active" : "pending";
+    return { pct, status };
+  }
+
+  function renderStages() {
+    const stagesEl = document.getElementById("stages");
+    stagesEl.innerHTML = "";
+    const groups = [...WEEKS.map(w => ({ label: w.version, days: w.days })), { label: CAPSTONE.version, days: CAPSTONE.days }];
+    let totalDays = 0, totalDone = 0;
+
+    groups.forEach(g => {
+      const { pct, status } = groupStatus(g.days);
+      totalDays += g.days.length;
+      totalDone += g.days.filter(d => state[d.id]).length;
+      const stage = document.createElement("div");
+      stage.className = "stage";
+      stage.dataset.status = status;
+      stage.innerHTML = `<span class="stage-name">${g.label}</span><span class="stage-pct">${pct}%</span>`;
+      stagesEl.appendChild(stage);
+    });
+
+    const overallPct = totalDays ? Math.round((totalDone / totalDays) * 100) : 0;
+    document.getElementById("overallFill").style.width = overallPct + "%";
+    document.getElementById("overallPct").textContent = overallPct + "% complete";
+  }
+
+  function renderResourceIndex() {
+    const seen = new Map();
+    WEEKS.concat([CAPSTONE]).forEach(group => {
+      (group.days || []).forEach(d => (d.links || []).forEach(([label, href]) => seen.set(label, href)));
+    });
+    const grid = document.getElementById("resourceGrid");
+    [...seen.entries()].forEach(([label, href]) => {
+      const a = document.createElement("a");
+      a.href = href; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = label + " ↗";
+      grid.appendChild(a);
+    });
+  }
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    Object.keys(state).forEach(k => delete state[k]);
+    save();
+    document.querySelectorAll(".day").forEach(el => {
+      el.dataset.done = "false";
+      const cb = el.querySelector("input");
+      cb.checked = false;
+      el.querySelector(".day-title span").className = "";
+    });
+    renderStages();
+  });
+
+  renderReleases();
+  renderStages();
+  renderResourceIndex();
+})();
+</script>
+</body>
+</html>
