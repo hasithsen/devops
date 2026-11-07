@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior DevOps Interview Master Guide</title>
+    <style>
+        :root {
+            --bg-deep: #0b0f19;
+            --bg-surface: #131a2c;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-cyan: #38bdf8;
+            --accent-green: #34d399;
+            --accent-orange: #fb923c;
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar navigation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--border);
+            color: var(--accent-cyan);
+        }
+
+        /* Main content area */
+        .content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem;
+            max-width: 900px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            color: var(--text-main);
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .badge-eu {
+            background-color: #1e3a8a;
+            color: #93c5fd;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .section-panel {
+            display: none;
+        }
+
+        .section-panel.active {
+            display: block;
+        }
+
+        h2.section-header {
+            color: var(--accent-cyan);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Architecture Blocks */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .arch-card {
+            background-color: var(--bg-surface);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .arch-card.compliance { border-left-color: var(--accent-orange); }
+        .arch-card.incident { border-left-color: var(--accent-green); }
+
+        .arch-card h3 {
+            margin-top: 0;
+            color: var(--text-main);
+        }
+
+        code {
+            background-color: #000;
+            color: #a7f3d0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .framework-box {
+            background-color: #1e293b;
+            border: 1px dashed var(--accent-cyan);
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 1rem;
+            margin-top: 0.3rem;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .checklist-text strong {
+            color: var(--accent-cyan);
+        }
+
+        @media(max-width: 768px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .content { margin-left: 0; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h2>DevOps Guide</h2>
+            
+            <div class="nav-group">
+                <div class="nav-title">Phase 1: Architecture</div>
+                <div class="nav-link active" onclick="showTab('sys-design')">System Design</div>
+                <div class="nav-link" onclick="showTab('eu-compliance')">EU Compliance & Data</div>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-title">Phase 2: Execution</div>
+                <div class="nav-link" onclick="showTab('troubleshooting')">Incident Response</div>
+                <div class="nav-link" onclick="showTab('platform-eng')">Platform Engineering</div>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-title">Phase 3: Alignment</div>
+                <div class="nav-link" onclick="showTab('behavioral')">Behavioral & STAR</div>
+                <div class="nav-link" onclick="showTab('checklist')">Preparation Checklist</div>
+            </div>
+        </nav>
+        <!-- Main Content Core -->
+        <main class="content">
+            <span class="badge-eu">EUROPEAN MARKET SPECIFICATION</span>
+            
+            <!-- System Design Tab -->
+            <div id="sys-design" class="section-panel active">
+                <h1>High-Availability System Design</h1>
+                <p>European interview loops prioritize structural trade-offs, capacity planning, and total cost of ownership (FinOps) over sheer tool implementation details.</p>
+                
+                <h2 class="section-header">Core Target Patterns</h2>
+                <div class="arch-grid">
+                    <div class="arch-card">
+                        <h3>Multi-Region Active-Active Deployments</h3>
+                        <p>Be ready to design patterns that balance user traffic across multiple EU regions (e.g., <code>eu-west-1</code> Dublin and <code>eu-central-1</code> Frankfurt) using latency-based routing policies via Route 53 or Cloudflare.</p>
+                        <ul>
+                            <li><strong>Database Replication:</strong> Address cross-region replication lag. Utilize read-replicas or globally distributed databases like Amazon Aurora Global Databases or CockroachDB.</li>
+                            <li><strong>State Isolation:</strong> Strive to keep user sessions stateless, offloading global session memory state to replicated Redis clusters.</li>
+                        </ul>
+                    </div>
+
+                    <div class="arch-card">
+                        <h3>Disaster Recovery Mechanics</h3>
+                        <p>Always anchor your infrastructure designs by explicitly stating your target metrics:</p>
+                        <ul>
+                            <li><strong>RTO (Recovery Time Objective):</strong> The maximum acceptable real-world downtime allowed to recover the platform.</li>
+                            <li><strong>RPO (Recovery Point Objective):</strong> The maximum acceptable volume of transactional data loss measured in time units.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="framework-box">
+                    <h4>💡 Architectural Pro-Tip</h4>
+                    <p>When given an abstract system prompt, immediately explicitly mention cloud compute efficiency and <strong>FinOps strategies</strong> (e.g., Karpenter for right-sizing EKS clusters, Graviton ARM processors, lifecycle management for S3 buckets). Showing cost awareness is a major separator for senior levels.</p>
+                </div>
+            </div>
+
+            <!-- EU Compliance Tab -->
+            <div id="eu-compliance" class="section-panel">
+                <h1>EU Data Compliance & Sovereignty</h1>
+                <p>Architectural designs targeting European firms are heavily vetted for data perimeter management and adherence to regulatory mandates.</p>
+
+                <h2 class="section-header">Critical Legal & Technical Anchors</h2>
+                <div class="arch-grid">
+                    <div class="arch-card compliance">
+                        <h3>GDPR Boundaries & Data Residency</h3>
+                        <p>Personally Identifiable Information (PII) must be processed transparently and safely. You must confidently architect clear regional boundaries.</p>
+                        <ul>
+                            <li><strong>Isolation:</strong> Ensure that database backups, tracing logs, and analytical data streams containing PII never egress outside the boundaries of the EU/EEA zones.</li>
+                            <li><strong>Anonymization:</strong> Inject data masking proxy layers or anonymization tools directly into log collectors (FluentBit/Logstash) before shipping logs to third-party providers.</li>
+                        </ul>
+                    </div>
+
+                    <div class="arch-card compliance">
+                        <h3>Sovereign Cloud Architectures</h3>
+                        <p>Many enterprises (especially within Germany and France) require compliance infrastructures built completely separate from US cloud entities.</p>
+                        <p>Be conversational with native European cloud alternatives like **OVHcloud**, **Scaleway**, or localized frameworks like Deutsche Telekom’s Sovereign Cloud offerings.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Incident Response Tab -->
+            <div id="troubleshooting" class="section-panel">
+                <h1>Incident Response & Firefighting</h1>
+                <p>During live troubleshooting scenarios, interviewers assess your systemic debugging methodology rather than luck-based guessing.</p>
+
+                <div class="framework-box">
+                    <h4>The Senior Debugging Framework</h4>
+                    <p><strong>1. Diagnose:</strong> Verify the impact surface area. Check global metrics using tools like Grafana dashboards or Datadog anomalies.</p>
+                    <p><strong>2. Isolate:</strong> Trace requests down the microservice mesh. Pinpoint specific fault domains by looking at error patterns in OpenTelemetry traces.</p>
+                    <p><strong>3. Fix:</strong> Apply fast mitigation safely (e.g., traffic rollback, blue/green shifting, scaling out replicas, or injecting a circuit breaker config).</p>
+                    <p><strong>4. Prevent:</strong> Outline structural fixes, automated circuit-breaking configurations, or comprehensive regression testing to ensure the failure mode never occurs again.</p>
+                </div>
+
+                <h2 class="section-header">Common Scenario Deep Dive</h2>
+                <div class="arch-card incident">
+                    <h3>Cascading 504 Gateway Timeouts</h3>
+                    <p><em>Prompt: "A primary backend service is triggering cascading timeouts, and your database CPU usage is locked at 99%."</em></p>
+                    <p><strong>Senior Strategy:</strong> Do not just reboot the database—this can cause immediate connection floods upon startup. Explain how you would review slow-query metrics, deploy connection pool limits (PgBouncer), scale up read-replicas, or implement aggressive Redis caching layers to temporarily absorb the operational stress.</p>
+                </div>
+            </div>
+            <!-- Platform Engineering Tab -->
+            <div id="platform-eng" class="section-panel">
+                <h1>Platform Engineering & GitOps</h1>
+                <p>Senior roles shift away from manual infrastructure scripting to building scalable, internal automation frameworks that empower product teams.</p>
+
+                <h2 class="section-header">Core Production Concepts</h2>
+                <div class="arch-grid">
+                    <div class="arch-card">
+                        <h3>Enterprise IaC Scalability</h3>
+                        <ul>
+                            <li>Designing reusable, version-controlled Terraform/OpenTofu modules decoupled from environments via structured variable inputs.</li>
+                            <li>Handling distributed state locking via secure backends (S3 + DynamoDB tables, HashiCorp Consul).</li>
+                        </ul>
+                    </div>
+
+                    <div class="arch-card">
+                        <h3>GitOps & Continuous Delivery</h3>
+                        <p>Advocate for declarative, state-driven reconciliation loops over push-based deployment tools. Be prepared to discuss production patterns with <strong>ArgoCD</strong> or <strong>FluxCD</strong>, multi-tenant cluster management, and handling drift detection alerts automatically.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Behavioral Tab -->
+            <div id="behavioral" class="section-panel">
+                <h1>Behavioral Evaluation (STAR Method)</h1>
+                <p>European companies place a major premium on collaborative leadership, minimizing ego, flat hierarchy alignment, and long-term sustainable software development.</p>
+
+                <div class="framework-box">
+                    <h4>Structure Your Narrative</h4>
+                    <p>Prepare 3 versatile real-world career stories formatted exactly to this structural grid:</p>
+                    <ul>
+                        <li><strong>S - Situation:</strong> Set the context concisely. <em>"Our platform faced a 40% rise in database infrastructure overhead last quarter during a migration."</em></li>
+                        <li><strong>T - Task:</strong> State the exact technical challenge you owned. <em>"I needed to reduce cost metrics without lowering application performance."</em></li>
+                        <li><strong>A - Action:</strong> Describe what you did. Detail your mentorship or architectural influence. <em>"I orchestrated profiling reviews, optimized our IaC structures, and introduced automated cluster scaling policies."</em></li>
+                        <li><strong>R - Result:</strong> Highlight quantifiable business outcomes. <em>"We lowered monthly infrastructure outlays by 28% and maintained 99.99% availability."</em></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Checklist Tab -->
+            <div id="checklist" class="section-panel">
+                <h1>Execution Track Checklist</h1>
+                <p>Use this interactive interface to mark your milestones as you progress toward your upcoming interview dates.</p>
+
+                <div class="checklist-item">
+                    <input type="checkbox" id="c1">
+                    <div class="checklist-text"><label for="c1"><strong>Architectural Blueprints:</strong> Draft an architecture schema covering an end-to-end multi-region system.</label></div>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="c2">
+                    <div class="checklist-text"><label for="c2"><strong>Compliance Safeguards:</strong> Document a clear data security plan detailing how to mask logs and block PII from leaking outside the EU.</label></div>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="c3">
+                    <div class="checklist-text"><label for="c3"><strong>Incident Retrospective:</strong> Write out two clear production outage stories using the diagnostic framework.</label></div>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="c4">
+                    <div class="checklist-text"><label for="c4"><strong>GitOps Maturity:</strong> Practice explaining the core architectural components of ArgoCD controller patterns.</label></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Interface Switching Script -->
+    <script>
+        function showTab(tabId) {
+            // Hide all panels
+            document.querySelectorAll('.section-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            // Remove active style from navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Activate target panel
+            document.getElementById(tabId).classList.add('active');
+
+            // Find and highlight active navigation link
+            const targetLink = Array.from(document.querySelectorAll('.nav-link'))
+                .find(link => link.getAttribute('onclick').includes(tabId));
+            if(targetLink) targetLink.classList.add('active');
+
+            // Smooth scroll content container up
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
